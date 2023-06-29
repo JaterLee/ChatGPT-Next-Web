@@ -27,6 +27,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
+import { EmojiAvatar } from "./emoji";
+import { Mask, useMaskStore } from "../store/mask";
+import { CN_MASKS } from "../masks/cn";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -117,10 +120,13 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          ChatGPT Next
+          JaterGPT
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          😊可以选择面具指定一个人格跟你聊天
+        </div>
+        <div className={styles["sidebar-sub-title"]}>
+          😊也可以直接开始一个新的聊天
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
@@ -136,10 +142,50 @@ export function SideBar(props: { className?: string }) {
           shadow
         />
         <IconButton
-          icon={<PluginIcon />}
-          text={shouldNarrow ? undefined : Locale.Plugin.Name}
+          icon={<AddIcon />}
+          text={shouldNarrow ? undefined : Locale.Home.NewChat}
+          onClick={() => {
+            chatStore.newSession();
+            navigate(Path.Chat);
+          }}
+          shadow
+        />
+      </div>
+      <div className={styles["sidebar-header-bar"]}>
+        <IconButton
+          icon={<EmojiAvatar avatar="1f4f1" />}
+          text={"iOS研发专家"}
           className={styles["sidebar-bar-button"]}
-          onClick={() => showToast(Locale.WIP)}
+          onClick={() => {
+            chatStore.newSession(
+              CN_MASKS.find((e) => e.name === "iOS研发专家") as Mask,
+            );
+            navigate(Path.Chat);
+          }}
+          shadow
+        />
+        <IconButton
+          icon={<EmojiAvatar avatar="1f916" />}
+          text={"Android研发专家"}
+          className={styles["sidebar-bar-button"]}
+          onClick={() => {
+            chatStore.newSession(
+              CN_MASKS.find((e) => e.name === "Android研发专家") as Mask,
+            );
+            navigate(Path.Chat);
+          }}
+          shadow
+        />
+        <IconButton
+          icon={<EmojiAvatar avatar="1f5bc-fe0f" />}
+          text={"以文搜图"}
+          className={styles["sidebar-bar-button"]}
+          onClick={() => {
+            chatStore.newSession(
+              CN_MASKS.find((e) => e.name === "以文搜图") as Mask,
+            );
+            navigate(Path.Chat);
+          }}
           shadow
         />
       </div>
@@ -172,26 +218,6 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
-          <div className={styles["sidebar-action"]}>
-            <a href={REPO_URL} target="_blank">
-              <IconButton icon={<GithubIcon />} shadow />
-            </a>
-          </div>
-        </div>
-        <div>
-          <IconButton
-            icon={<AddIcon />}
-            text={shouldNarrow ? undefined : Locale.Home.NewChat}
-            onClick={() => {
-              if (config.dontShowMaskSplashScreen) {
-                chatStore.newSession();
-                navigate(Path.Chat);
-              } else {
-                navigate(Path.NewChat);
-              }
-            }}
-            shadow
-          />
         </div>
       </div>
 
